@@ -6,7 +6,7 @@ Devise.setup do |config|
   # confirmation, reset password and unlock tokens in the database.
   # Devise will use the `secret_key_base` as its `secret_key`
   # by default. You can change it below and use your own secret key.
-  # config.secret_key = 'ad3a73ab4ddffa4fc1dacd590861d3fe34d041894c69e2ac490d3bca8c0fb305615742095251dd1b0c8727975251831b2224a2664ab6048c2cad098ab4bbcc2f'
+  # config.secret_key = '4d1a5840c6d6a8e751b664a294587e55d2655e5fb5d53902ea43a38b94ec79da8bcc4a27b5c423ace43da93426da6d6da1b6ed02ce8cdbb63044cd6c4c544069'
 
   # ==> Mailer Configuration
   # Configure the e-mail address which will be shown in Devise::Mailer,
@@ -102,7 +102,7 @@ Devise.setup do |config|
   config.stretches = Rails.env.test? ? 1 : 11
 
   # Set up a pepper to generate the hashed password.
-  # config.pepper = 'ada52ad7f29a01a66118e2e0adafd1b89745831bb7b54491d843c266a33f6137144002910e7444b6193b92bfc94351edc21af607cf6cf4c5b481a15128e93d50'
+  # config.pepper = '605f252fef12fbb3b4314245c717138ab9b9edb249044ead6f30a03ec6effaff4457d7ce82d5a5c65f65f92096ad20e8eb420a77602adf08f9cefb38ff1b1c8c'
 
   # Send a notification email when the user's password is changed
   # config.send_password_change_notification = false
@@ -241,7 +241,8 @@ Devise.setup do |config|
   # ==> OmniAuth
   # Add a new OmniAuth provider. Check the wiki for more information on setting
   # up on your models and hooks.
-  # config.omniauth :github, 'APP_ID', 'APP_SECRET', scope: 'user,public_repo'
+  #config.omniauth :github, ENV['ORIGEN_GITHUB_ID'], ENV['ORIGEN_GITHUB_SECRET'], scope: 'user,public_repo'
+  config.omniauth :github, ENV['ORIGEN_GITHUB_ID'], ENV['ORIGEN_GITHUB_SECRET'], scope: 'user'
 
   # ==> Warden configuration
   # If you want to use other strategies, that are not supported by Devise, or
@@ -264,5 +265,6 @@ Devise.setup do |config|
   #
   # When using OmniAuth, Devise cannot automatically set OmniAuth path,
   # so you need to do it manually. For the users scope, it would be:
-  # config.omniauth_path_prefix = '/my_engine/users/auth'
+  #config.omniauth_path_prefix = '/my_engine/users/auth'
+  config.omniauth_path_prefix = '/users/auth'
 end
