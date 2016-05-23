@@ -2,6 +2,8 @@ class User
   include NoBrainer::Document
   include NoBrainer::Document::Timestamps
 
+  before_save :ensure_authentication_token
+
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable,
@@ -39,10 +41,48 @@ class User
   # field :locked_at,       :type => Time
 
   # Omniauth
-  field :provider
-  field :uid
+  field :github_uid
+  field :facebook_uid
 
   # Custom fields
-  field :username
+  field :authentication_token
+  field :name
+  field :avatar_url
 
+  def self.from_omniauth(auth)
+    if auth.provider == "github"
+      u = where(github_uid: auth.uid).first || where(email: auth.info.email).first
+      if u
+        unless u.avatar_url
+          u.avatar_url = auth.info.image
+          u.save
+        end
+      else
+        u = User.new
+        u.email = auth.info.email
+        u.password = Devise.friendly_token[0,20]
+        u.name = auth.info.name
+        u.avatar_url = auth.info.image
+        u.save
+      end
+      u
+    else
+      fail "Unknown auth provider"
+    end
+  end
+
+  def ensure_authentication_token
+    if authentication_token.blank?
+      self.authentication_token = generate_authentication_token
+    end
+  end
+
+  private
+  
+  def generate_authentication_token
+    loop do
+      token = Devise.friendly_token
+      break token unless User.where(authentication_token: token).first
+    end
+  end
 end
